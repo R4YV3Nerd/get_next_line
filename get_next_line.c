@@ -1,80 +1,88 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: maitoumg <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/06 22:50:35 by maitoumg          #+#    #+#             */
+/*   Updated: 2025/01/06 22:50:39 by maitoumg         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
 
-static char *initialize_storage(char *storage)
+static char	*initialize_storage(char *storage)
 {
-    if (!storage)
-        return ft_strdup("");
-    return storage;
+	if (!storage)
+		return (ft_strdup(""));
+	return (storage);
 }
 
-static int handle_read_error(int bytes_read, char **storage)
+static int	handle_read_error(int bytes_read, char **storage)
 {
-    if (bytes_read < 0 && *storage)
-    {
-        free(*storage);
-        return 1;
-    }
-    if (bytes_read == 0 && (!*storage || !**storage))
-        return 1;
-    return 0;
+	if (bytes_read < 0 && *storage)
+	{
+		free(*storage);
+		return (1);
+	}
+	if (bytes_read == 0 && (!*storage || !**storage))
+		return (1);
+	return (0);
 }
 
-static char *ft_strdup(const char *str)
+static char	*ft_strdup(const char *str)
 {
-    size_t len;
-    char *copy;
+	size_t	len;
+	char	*copy;
 
-    len = strlen(str) + 1;
-    copy = malloc(len);
-    if (copy)
-        memcpy(copy, str, len);
-    return copy;
+	len = strlen(str) + 1;
+	copy = malloc(len);
+	if (copy)
+		memcpy(copy, str, len);
+	return (copy);
 }
 
-static char *update_storage(char *storage, char *buffer)
+static char	*update_storage(char *storage, char *buffer)
 {
-    char *old_storage = storage;
-    storage = ft_strjoin(storage, buffer);
-    if (!storage)
-    {
-        free(old_storage);
-        return NULL;
-    }
-    free(old_storage);
-    return storage;
+	char	*old_storage;
+
+	old_storage = storage;
+	storage = ft_strjoin(storage, buffer);
+	if (!storage)
+	{
+		free(old_storage);
+		return (NULL);
+	}
+	free(old_storage);
+	return (storage);
 }
 
-char *get_next_line(int fd)
+char	*get_next_line(int fd)
 {
-    static char *storage;
-    char buffer[BUFFER_SIZE + 1];
-    char *line;
-    int bytes_read;
+	static char	*storage;
+	char		buffer[BUFFER_SIZE + 1];
+	char		*line;
+	int			bytes_read;
 
-    if (fd < 0 || BUFFER_SIZE <= 0)
-        return NULL;
-
-    storage = initialize_storage(storage);
-
-    while (!ft_strchr(storage, '\n'))
-    {
-        bytes_read = read(fd, buffer, BUFFER_SIZE);
-        if (handle_read_error(bytes_read, &storage))
-            return NULL;
-
-        buffer[bytes_read] = '\0';
-        storage = update_storage(storage, buffer);
-        if (!storage)
-            return NULL;
-    }
-
-    line = extract_line_and_update_storage(&storage);
-    if (!line)
-    {
-        free(storage);
-        return NULL;
-    }
-
-    return line;
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
+	storage = initialize_storage(storage);
+	while (!ft_strchr(storage, '\n'))
+	{
+		bytes_read = read(fd, buffer, BUFFER_SIZE);
+		if (handle_read_error(bytes_read, &storage))
+			return (NULL);
+		buffer[bytes_read] = '\0';
+		storage = update_storage(storage, buffer);
+		if (!storage)
+			return (NULL);
+	}
+	line = extract_line_and_update_storage(&storage);
+	if (!line)
+	{
+		free(storage);
+		return (NULL);
+	}
+	return (line);
 }
-
