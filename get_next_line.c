@@ -5,84 +5,84 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: maitoumg <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/06 22:50:35 by maitoumg          #+#    #+#             */
-/*   Updated: 2025/01/06 22:50:39 by maitoumg         ###   ########.fr       */
+/*   Created: 2025/01/07 02:04:09 by maitoumg          #+#    #+#             */
+/*   Updated: 2025/01/07 02:04:11 by maitoumg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char	*initialize_storage(char *storage)
+char	*init_empty_string(void)
 {
-	if (!storage)
-		return (ft_strdup(""));
-	return (storage);
-}
+	char	*str;
 
-static int	handle_read_error(int bytes_read, char **storage)
-{
-	if (bytes_read < 0 && *storage)
-	{
-		free(*storage);
-		return (1);
-	}
-	if (bytes_read == 0 && (!*storage || !**storage))
-		return (1);
-	return (0);
-}
-
-static char	*ft_strdup(const char *str)
-{
-	size_t	len;
-	char	*copy;
-
-	len = strlen(str) + 1;
-	copy = malloc(len);
-	if (copy)
-		memcpy(copy, str, len);
-	return (copy);
-}
-
-static char	*update_storage(char *storage, char *buffer)
-{
-	char	*old_storage;
-
-	old_storage = storage;
-	storage = ft_strjoin(storage, buffer);
-	if (!storage)
-	{
-		free(old_storage);
+	str = (char *)malloc(sizeof(char));
+	if (!str)
 		return (NULL);
+	str[0] = 0;
+	return (str);
+}
+
+void	shiftstr(char **str, size_t start)
+{
+	char	*tmp;
+
+	tmp = *str;
+	*str = substring(*str, start, string_length(*str));
+	free(tmp);
+}
+
+int	get_prev(char **previous, int fd)
+{
+	char	*buf;
+	ssize_t	ret;
+
+	if (!BUFFER_SIZE || BUFFER_SIZE < 1 || fd < 0 || read(fd, 0, 0) < 0)
+		return (0);
+	if (!(*previous))
+		*previous = init_empty_string();
+	if (!(*previous))
+		return (0);
+	buf = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (!buf)
+		return (0);
+	ret = read(fd, buf, BUFFER_SIZE);
+	while (ret)
+	{
+		buf[ret] = 0;
+		*previous = string_join(*previous, buf);
+		if (find_char(*previous, '\n') >= 0)
+			break ;
+		ret = read(fd, buf, BUFFER_SIZE);
 	}
-	free(old_storage);
-	return (storage);
+	free(buf);
+	return (1);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*storage;
-	char		buffer[BUFFER_SIZE + 1];
-	char		*line;
-	int			bytes_read;
+	int				cur;
+	char			*readed;
+	static char		*previous = NULL;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (!get_prev(&previous, fd))
 		return (NULL);
-	storage = initialize_storage(storage);
-	while (!ft_strchr(storage, '\n'))
+	cur = find_char(previous, '\n');
+	if (cur >= 0)
 	{
-		bytes_read = read(fd, buffer, BUFFER_SIZE);
-		if (handle_read_error(bytes_read, &storage))
-			return (NULL);
-		buffer[bytes_read] = '\0';
-		storage = update_storage(storage, buffer);
-		if (!storage)
-			return (NULL);
+		readed = substring(previous, 0, cur + 1);
+		shiftstr(&previous, cur + 1);
 	}
-	line = extract_line_and_update_storage(&storage);
-	if (!line)
+	else
 	{
-		free(storage);
+		readed = substring(previous, 0, string_length(previous));
+		free(previous);
+		previous = NULL;
+	}
+	if (string_length(readed) == 0)
+	{
+		free(readed);
 		return (NULL);
 	}
-	return (line);
+	return (readed);
 }

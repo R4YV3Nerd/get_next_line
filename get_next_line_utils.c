@@ -5,84 +5,99 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: maitoumg <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/06 22:53:10 by maitoumg          #+#    #+#             */
-/*   Updated: 2025/01/06 22:54:51 by maitoumg         ###   ########.fr       */
+/*   Created: 2025/01/07 02:04:26 by maitoumg          #+#    #+#             */
+/*   Updated: 2025/01/07 02:04:29 by maitoumg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-size_t	ft_strlen(const char *s)
+size_t	string_length(const char *s)
 {
-	size_t	len;
+	size_t	cur;
 
-	len = 0;
-	while (s[len])
-		len++;
-	return (len);
+	cur = 0;
+	while (s[cur])
+		cur++;
+	return (cur);
 }
 
-void	ft_strcpy(char *dest, const char *src, size_t len)
+static size_t	strlcpy_custom(char *dst, const char *src, size_t size)
 {
-	size_t	i;
+	size_t	cur;
 
-	i = 0;
-	while (i < len)
+	if (size == 0)
+		return (string_length(src));
+	cur = 0;
+	while (src[cur] && cur < (size - 1))
 	{
-		dest[i] = src[i];
-		i++;
+		dst[cur] = src[cur];
+		cur++;
 	}
+	dst[cur] = 0;
+	return (string_length(src));
 }
 
-char	*ft_strjoin(char *s1, const char *s2)
+long	find_char(const char *s, char c)
 {
-	size_t	len1;
-	size_t	len2;
-	char	*joined;
-	size_t	i;
-	size_t	j;
+	long	cur;
 
-	len1 = ft_strlen(s1);
-	len2 = ft_strlen(s2);
-	joined = malloc(len1 + len2 + 1);
-	if (!joined)
+	cur = 0;
+	while (s[cur])
+	{
+		if (s[cur] == (unsigned char)c)
+			return (cur);
+		cur++;
+	}
+	if (s[cur] == (unsigned char)c)
+		return (cur);
+	return (-1);
+}
+
+char	*string_join(char *s1, char const *s2)
+{
+	size_t	s1_len;
+	size_t	s2_len;
+	char	*join;
+
+	if (!s1 || !s2)
 		return (NULL);
-	ft_strcpy(joined, s1, len1);
-	i = len1;
-	j = 0;
-	while (j < len2)
-	{
-		joined[i + j] = s2[j];
-		j++;
-	}
-	joined[len1 + len2] = '\0';
-	return (joined);
+	s1_len = string_length(s1);
+	s2_len = string_length(s2);
+	join = (char *)malloc((s1_len + s2_len + 1) * sizeof(char));
+	if (!join)
+		return (NULL);
+	strlcpy_custom(join, s1, s1_len + 1);
+	strlcpy_custom((join + s1_len), s2, s2_len + 1);
+	free(s1);
+	return (join);
 }
 
-char	*extract_line_and_update_storage(char **storage)
+char	*substring(char const *s, unsigned int start, size_t len)
 {
-	size_t	i;
-	size_t	j;
-	char	*line;
-	char	*new_storage;
+	char	*sub;
+	size_t	new_len;
 
-	i = 0;
-	while ((*storage)[i] && (*storage)[i] != '\n')
-		i++;
-	if ((*storage)[i] == '\n')
-		i++;
-	line = malloc(i + 1);
-	if (!line)
+	if (!s)
 		return (NULL);
-	j = 0;
-	while (j < i)
+	if (string_length(s) < start)
 	{
-		line[j] = *storage[j];
-		j++;
+		sub = malloc(sizeof(char));
+		sub[0] = 0;
+		if (!sub)
+			return (NULL);
 	}
-	line[i] = '\0';
-	new_storage = ft_strdup(*storage + i);
-	free(*storage);
-	*storage = new_storage;
-	return (line);
+	else
+	{
+		new_len = string_length(s + start);
+		if (!(new_len < len))
+			new_len = len;
+		sub = (char *)malloc((new_len + 1) * sizeof(char));
+		if (!sub)
+			return (NULL);
+		sub[new_len] = 0;
+		while (new_len-- > 0)
+			sub[new_len] = s[start + new_len];
+	}
+	return (sub);
 }
