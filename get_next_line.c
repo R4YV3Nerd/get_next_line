@@ -6,7 +6,7 @@
 /*   By: maitoumg <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 02:04:09 by maitoumg          #+#    #+#             */
-/*   Updated: 2025/01/16 17:27:26 by maitoumg         ###   ########.fr       */
+/*   Updated: 2025/01/16 18:11:02 by maitoumg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	move_str_start(char **str, size_t start)
 	char	*temporary_buffer;
 
 	temporary_buffer = *str;
-	*str = extract_substring(*str, start, string_length(*str));
+	*str = extract_substr(*str, start, get_str_len(*str));
 	free(temporary_buffer);
 }
 
@@ -62,7 +62,7 @@ int	prepare_prev_line(char **stored_data, int fd)
 char	*get_next_line(int fd)
 {
 	int				newline_index;
-	char			*line_to_return;
+	char			*readed;
 	static char		*stored_data = NULL;
 
 	if (!prepare_prev_line(&stored_data, fd))
@@ -70,19 +70,19 @@ char	*get_next_line(int fd)
 	newline_index = find_character(stored_data, '\n');
 	if (newline_index >= 0)
 	{
-		line_to_return = extract_substring(stored_data, 0, newline_index + 1);
+		readed = extract_substr(stored_data, 0, newline_index + 1);
 		move_str_start(&stored_data, newline_index + 1);
 	}
 	else
 	{
-		line_to_return = extract_substring(stored_data, 0, string_length(stored_data));
+		readed = extract_substr(stored_data, 0, get_str_len(stored_data));
 		free(stored_data);
 		stored_data = NULL;
 	}
-	if (string_length(line_to_return) == 0)
+	if (get_str_len(readed) == 0)
 	{
-		free(line_to_return);
+		free(readed);
 		return (NULL);
 	}
-	return (line_to_return);
+	return (readed);
 }
