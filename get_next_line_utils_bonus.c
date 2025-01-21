@@ -11,94 +11,93 @@
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
-#include <stdlib.h>
 
-size_t	ft_strlen(const char *s)
+size_t	get_str_len(const char *s)
 {
-	size_t	cur;
+	size_t	index;
 
-	cur = 0;
-	while (s[cur])
-		cur++;
-	return (cur);
+	index = 0;
+	while (s[index])
+		index++;
+	return (index);
 }
 
-void	shiftstr(char **str, size_t start)
+static size_t	copy_string_safe(char *dst, const char *src, size_t size)
 {
-	char	*tmp;
+	size_t	index;
 
-	tmp = *str;
-	*str = ft_substr(*str, start, ft_strlen(*str));
-	free(tmp);
-}
-
-long	charchr(const char *s, char c)
-{
-	long	cur;
-
-	cur = 0;
-	while (s[cur])
+	if (size == 0)
+		return (get_str_len(src));
+	index = 0;
+	while (src[index] && index < (size - 1))
 	{
-		if (s[cur] == (unsigned char)c)
-			return (cur);
-		cur++;
+		dst[index] = src[index];
+		index++;
 	}
-	if (s[cur] == (unsigned char)c)
-		return (cur);
+	dst[index] = 0;
+	return (get_str_len(src));
+}
+
+long	find_character(const char *s, char c)
+{
+	long	index;
+
+	index = 0;
+	while (s[index])
+	{
+		if (s[index] == (unsigned char)c)
+			return (index);
+		index++;
+	}
+	if (s[index] == (unsigned char)c)
+		return (index);
 	return (-1);
 }
 
-char	*ft_strjoin(char *s1, char const *s2)
+char	*concat_strings(char *s1, char const *s2)
 {
 	size_t	s1_len;
 	size_t	s2_len;
-	size_t	cur1;
-	size_t	cur2;
-	char	*result;
+	char	*concated_string;
 
 	if (!s1 || !s2)
 		return (NULL);
-	s1_len = ft_strlen(s1);
-	s2_len = ft_strlen(s2);
-	result = malloc(sizeof(char) * (s1_len + s2_len + 1));
-	if (!result)
+	s1_len = get_str_len(s1);
+	s2_len = get_str_len(s2);
+	concated_string = (char *)malloc((s1_len + s2_len + 1) * sizeof(char));
+	if (!concated_string)
 		return (NULL);
-	cur1 = -1;
-	while (s1[++cur1])
-		result[cur1] = s1[cur1];
-	cur2 = -1;
-	while (s2[++cur2])
-		result[cur1++] = s2[cur2];
-	result[cur1] = '\0';
+	copy_string_safe(concated_string, s1, s1_len + 1);
+	copy_string_safe((concated_string + s1_len), s2, s2_len + 1);
 	free(s1);
-	return (result);
+	return (concated_string);
 }
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+char	*extract_substr(char const *s, unsigned int start, size_t len)
 {
-	char	*sub;
+	char	*substring_result;
 	size_t	new_len;
 
 	if (!s)
 		return (NULL);
-	if (ft_strlen(s) < start)
+	if (get_str_len(s) < start)
 	{
-		sub = malloc(sizeof(char));
-		if (!sub)
+		substring_result = malloc(sizeof(char));
+		substring_result[0] = 0;
+		if (!substring_result)
 			return (NULL);
-		sub[0] = 0;
 	}
 	else
 	{
-		new_len = ft_strlen(s + start);
+		new_len = get_str_len(s + start);
 		if (!(new_len < len))
 			new_len = len;
-		sub = (char *)malloc((new_len + 1) * sizeof(char));
-		if (!sub)
+		substring_result = (char *)malloc((new_len + 1) * sizeof(char));
+		if (!substring_result)
 			return (NULL);
-		sub[new_len] = 0;
+		substring_result[new_len] = 0;
 		while (new_len-- > 0)
-			sub[new_len] = s[start + new_len];
+			substring_result[new_len] = s[start + new_len];
 	}
-	return (sub);
+	return (substring_result);
 }
