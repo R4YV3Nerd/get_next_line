@@ -10,10 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line_bonus.h"
+#include "get_next_line.h"
 
 size_t	get_str_len(const char *s)
-{
+{ 
 	size_t	index;
 
 	index = 0;
@@ -37,7 +37,6 @@ static size_t	copy_string_safe(char *dst, const char *src, size_t size)
 	dst[index] = 0;
 	return (get_str_len(src));
 }
-
 long	find_character(const char *s, char c)
 {
 	long	index;
@@ -53,7 +52,6 @@ long	find_character(const char *s, char c)
 		return (index);
 	return (-1);
 }
-
 char	*concat_strings(char *s1, char const *s2)
 {
 	size_t	s1_len;
@@ -72,7 +70,6 @@ char	*concat_strings(char *s1, char const *s2)
 	free(s1);
 	return (concated_string);
 }
-
 char	*extract_substr(char const *s, unsigned int start, size_t len)
 {
 	char	*substring_result;

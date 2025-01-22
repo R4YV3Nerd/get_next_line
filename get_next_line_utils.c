@@ -6,14 +6,14 @@
 /*   By: maitoumg <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/07 02:04:26 by maitoumg          #+#    #+#             */
-/*   Updated: 2025/01/16 18:09:00 by maitoumg         ###   ########.fr       */
+/*   Updated: 2025/01/22 18:54:04 by maitoumg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
 size_t	get_str_len(const char *s)
-{ 
+{
 	size_t	index;
 
 	index = 0;

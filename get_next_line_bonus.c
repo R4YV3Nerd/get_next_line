@@ -12,11 +12,7 @@
 
 #include "get_next_line_bonus.h"
 
-#define MAX_FDS 1024  // Adjust this if necessary for the maximum number of FDs you expect
-
-static char *fd_buffers[MAX_FDS] = {0};  // Array to hold buffers for each fd
-static size_t fd_positions[MAX_FDS] = {0};  // Positions for each fd
-
+static char *fd_buffers[1024];
 char	*create_empty_string(void)
 {
 	char	*str;
@@ -37,14 +33,14 @@ void	move_str_start(char **str, size_t start)
 	free(temporary_buffer);
 }
 
-int	prepare_prev_line(char **stored_data, int fd)
+int	prepare_prev_line(int fd)
 {
 	char	*buf;
 	ssize_t	ret;
 
 	if (!BUFFER_SIZE || BUFFER_SIZE < 1 || fd < 0 || read(fd, 0, 0) < 0)
 		return (0);
-	if (!fd_buffers[fd])  // If no buffer exists for this fd, initialize it
+	if (!fd_buffers[fd])
 		fd_buffers[fd] = create_empty_string();
 	if (!fd_buffers[fd])
 		return (0);
@@ -52,7 +48,7 @@ int	prepare_prev_line(char **stored_data, int fd)
 	if (!buf)
 		return (0);
 	ret = read(fd, buf, BUFFER_SIZE);
-	while (ret)
+	while (ret > 0)
 	{
 		buf[ret] = 0;
 		fd_buffers[fd] = concat_strings(fd_buffers[fd], buf);
@@ -61,15 +57,15 @@ int	prepare_prev_line(char **stored_data, int fd)
 		ret = read(fd, buf, BUFFER_SIZE);
 	}
 	free(buf);
-	return (1);
+	return (ret >= 0);
 }
 
 char	*get_next_line(int fd)
 {
-	int				newline_index;
-	char			*readed;
+	int		newline_index;
+	char		*readed;
 
-	if (!prepare_prev_line(&fd_buffers[fd], fd))
+	if (!prepare_prev_line(fd))
 		return (NULL);
 	newline_index = find_character(fd_buffers[fd], '\n');
 	if (newline_index >= 0)
