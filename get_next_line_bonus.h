@@ -26,6 +26,6 @@ long	find_character(const char *s, char c);
 size_t	get_str_len(const char *s);
 char	*concat_strings(char *s1, char const *s2);
 char	*extract_substr(char const *s, unsigned int start, size_t len);
-int	prepare_prev_line(int fd);
+int		prepare_prev_line(int fd);
 
 #endif

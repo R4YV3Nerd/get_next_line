@@ -12,7 +12,6 @@
 
 #include "get_next_line_bonus.h"
 
-static char *fd_buffers[1024];
 char	*create_empty_string(void)
 {
 	char	*str;
@@ -35,8 +34,9 @@ void	move_str_start(char **str, size_t start)
 
 int	prepare_prev_line(int fd)
 {
-	char	*buf;
-	ssize_t	ret;
+	static char	*fd_buffers[1024];
+	char		*buf;
+	ssize_t		ret;
 
 	if (!BUFFER_SIZE || BUFFER_SIZE < 1 || fd < 0 || read(fd, 0, 0) < 0)
 		return (0);
@@ -62,7 +62,8 @@ int	prepare_prev_line(int fd)
 
 char	*get_next_line(int fd)
 {
-	int		newline_index;
+	static char	*fd_buffers[1024];
+	int			newline_index;
 	char		*readed;
 
 	if (!prepare_prev_line(fd))
