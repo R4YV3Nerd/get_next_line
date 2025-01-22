@@ -31,6 +31,7 @@ int main()
     close(fd1);
     close(fd2);
     close(fd3);
+    
 
     return 0;
 }

@@ -10,83 +10,94 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line_bonus.h"
+#include "get_next_line.h"
 
-#define MAX_FDS 1024
+size_t	get_str_len(const char *s)
+{ 
+	size_t	index;
 
-static char *fd_buffers[MAX_FDS] = {0};
-static size_t fd_positions[MAX_FDS] = {0};
-
-char	*create_empty_string(void)
-{
-	char	*str;
-
-	str = (char *)malloc(sizeof(char));
-	if (!str)
-		return (NULL);
-	str[0] = 0;
-	return (str);
+	index = 0;
+	while (s[index])
+		index++;
+	return (index);
 }
 
-void	move_str_start(char **str, size_t start)
+static size_t	copy_string_safe(char *dst, const char *src, size_t size)
 {
-	char	*temporary_buffer;
+	size_t	index;
 
-	temporary_buffer = *str;
-	*str = extract_substr(*str, start, get_str_len(*str));
-	free(temporary_buffer);
-}
-
-int	prepare_prev_line(char **stored_data, int fd)
-{
-	char	*buf;
-	ssize_t	ret;
-
-	if (!BUFFER_SIZE || BUFFER_SIZE < 1 || fd < 0 || read(fd, 0, 0) < 0)
-		return (0);
-	if (!fd_buffers[fd])  // If no buffer exists for this fd, initialize it
-		fd_buffers[fd] = create_empty_string();
-	if (!fd_buffers[fd])
-		return (0);
-	buf = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
-	if (!buf)
-		return (0);
-	ret = read(fd, buf, BUFFER_SIZE);
-	while (ret)
+	if (size == 0)
+		return (get_str_len(src));
+	index = 0;
+	while (src[index] && index < (size - 1))
 	{
-		buf[ret] = 0;
-		fd_buffers[fd] = concat_strings(fd_buffers[fd], buf);
-		if (find_character(fd_buffers[fd], '\n') >= 0)
-			break ;
-		ret = read(fd, buf, BUFFER_SIZE);
+		dst[index] = src[index];
+		index++;
 	}
-	free(buf);
-	return (1);
+	dst[index] = 0;
+	return (get_str_len(src));
 }
 
-char	*get_next_line(int fd)
+long	find_character(const char *s, char c)
 {
-	int				newline_index;
-	char			*readed;
+	long	index;
 
-	if (!prepare_prev_line(&fd_buffers[fd], fd))
-		return (NULL);
-	newline_index = find_character(fd_buffers[fd], '\n');
-	if (newline_index >= 0)
+	index = 0;
+	while (s[index])
 	{
-		readed = extract_substr(fd_buffers[fd], 0, newline_index + 1);
-		move_str_start(&fd_buffers[fd], newline_index + 1);
+		if (s[index] == (unsigned char)c)
+			return (index);
+		index++;
+	}
+	if (s[index] == (unsigned char)c)
+		return (index);
+	return (-1);
+}
+
+char	*concat_strings(char *s1, char const *s2)
+{
+	size_t	s1_len;
+	size_t	s2_len;
+	char	*concated_string;
+
+	if (!s1 || !s2)
+		return (NULL);
+	s1_len = get_str_len(s1);
+	s2_len = get_str_len(s2);
+	concated_string = (char *)malloc((s1_len + s2_len + 1) * sizeof(char));
+	if (!concated_string)
+		return (NULL);
+	copy_string_safe(concated_string, s1, s1_len + 1);
+	copy_string_safe((concated_string + s1_len), s2, s2_len + 1);
+	free(s1);
+	return (concated_string);
+}
+
+char	*extract_substr(char const *s, unsigned int start, size_t len)
+{
+	char	*substring_result;
+	size_t	new_len;
+
+	if (!s)
+		return (NULL);
+	if (get_str_len(s) < start)
+	{
+		substring_result = malloc(sizeof(char));
+		substring_result[0] = 0;
+		if (!substring_result)
+			return (NULL);
 	}
 	else
 	{
-		readed = extract_substr(fd_buffers[fd], 0, get_str_len(fd_buffers[fd]));
-		free(fd_buffers[fd]);
-		fd_buffers[fd] = NULL;
+		new_len = get_str_len(s + start);
+		if (!(new_len < len))
+			new_len = len;
+		substring_result = (char *)malloc((new_len + 1) * sizeof(char));
+		if (!substring_result)
+			return (NULL);
+		substring_result[new_len] = 0;
+		while (new_len-- > 0)
+			substring_result[new_len] = s[start + new_len];
 	}
-	if (get_str_len(readed) == 0)
-	{
-		free(readed);
-		return (NULL);
-	}
-	return (readed);
+	return (substring_result);
 }

@@ -11,120 +11,79 @@
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
 
-t_prev_list	*new_prevs(int fd)
+#define MAX_FDS 1024  // Adjust this if necessary for the maximum number of FDs you expect
+
+static char *fd_buffers[MAX_FDS] = {0};  // Array to hold buffers for each fd
+static size_t fd_positions[MAX_FDS] = {0};  // Positions for each fd
+
+char	*create_empty_string(void)
 {
-	t_prev_list	*elem;
+	char	*str;
 
-	elem = malloc(sizeof(t_prev_list));
-	if (!elem)
+	str = (char *)malloc(sizeof(char));
+	if (!str)
 		return (NULL);
-	elem->fd = fd;
-	elem->prev = (char *)malloc(sizeof(char));
-	if (elem->prev == NULL)
-		return (NULL);
-	elem->prev[0] = 0;
-	elem->next = NULL;
-	return (elem);
+	str[0] = 0;
+	return (str);
 }
 
-t_prev_list	*add_prevs(t_prev_list **prevs, char *buf, int fd)
+void	move_str_start(char **str, size_t start)
 {
-	t_prev_list	*curr;
-	t_prev_list	*elem;
+	char	*temporary_buffer;
 
-	curr = *prevs;
-	while (curr)
-	{
-		if (curr->fd == fd)
-		{
-			curr->prev = ft_strjoin(curr->prev, buf);
-			return (curr);
-		}
-		if (!curr->next)
-			break ;
-		curr = curr->next;
-	}
-	elem = new_prevs(fd);
-	if (!elem)
-		return (NULL);
-	elem->prev = ft_strjoin(elem->prev, buf);
-	curr->next = elem;
-	return (elem);
+	temporary_buffer = *str;
+	*str = extract_substr(*str, start, get_str_len(*str));
+	free(temporary_buffer);
 }
 
-t_prev_list	*delete_prev(t_prev_list *prevs, int fd)
+int	prepare_prev_line(char **stored_data, int fd)
 {
-	t_prev_list	*next;
-
-	if (prevs->fd == fd)
-	{
-		next = prevs->next;
-		free(prevs->prev);
-		free(prevs);
-		return (next);
-	}
-	else
-	{
-		prevs->next = delete_prev(prevs->next, fd);
-		return (prevs);
-	}
-}
-
-t_prev_list	*get_prev(t_prev_list **prevs, int fd)
-{
-	t_prev_list			*cur_prev;
-	ssize_t				ret;
-	char				*buf;
+	char	*buf;
+	ssize_t	ret;
 
 	if (!BUFFER_SIZE || BUFFER_SIZE < 1 || fd < 0 || read(fd, 0, 0) < 0)
-		return (NULL);
-	if (!(*prevs))
-		*prevs = new_prevs(fd);
-	if (!(*prevs))
-		return (NULL);
-	cur_prev = add_prevs(prevs, "", fd);
+		return (0);
+	if (!fd_buffers[fd])  // If no buffer exists for this fd, initialize it
+		fd_buffers[fd] = create_empty_string();
+	if (!fd_buffers[fd])
+		return (0);
 	buf = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (!buf)
-		return (NULL);
+		return (0);
 	ret = read(fd, buf, BUFFER_SIZE);
 	while (ret)
 	{
 		buf[ret] = 0;
-		cur_prev = add_prevs(prevs, buf, fd);
-		if (charchr(cur_prev->prev, '\n') >= 0)
+		fd_buffers[fd] = concat_strings(fd_buffers[fd], buf);
+		if (find_character(fd_buffers[fd], '\n') >= 0)
 			break ;
 		ret = read(fd, buf, BUFFER_SIZE);
 	}
 	free(buf);
-	return (cur_prev);
+	return (1);
 }
 
 char	*get_next_line(int fd)
 {
-	static t_prev_list	*prevs = NULL;
-	t_prev_list			*cur_prev;
-	char				*readed;
-	long				cur;
+	int				newline_index;
+	char			*readed;
 
-	cur_prev = get_prev(&prevs, fd);
-	if (!cur_prev)
+	if (!prepare_prev_line(&fd_buffers[fd], fd))
 		return (NULL);
-	cur = charchr(cur_prev->prev, '\n');
-	if (cur >= 0)
+	newline_index = find_character(fd_buffers[fd], '\n');
+	if (newline_index >= 0)
 	{
-		readed = ft_substr(cur_prev->prev, 0, cur + 1);
-		shiftstr(&(cur_prev->prev), cur + 1);
+		readed = extract_substr(fd_buffers[fd], 0, newline_index + 1);
+		move_str_start(&fd_buffers[fd], newline_index + 1);
 	}
 	else
 	{
-		readed = ft_substr(cur_prev->prev, 0, ft_strlen(cur_prev->prev));
-		prevs = delete_prev(prevs, fd);
+		readed = extract_substr(fd_buffers[fd], 0, get_str_len(fd_buffers[fd]));
+		free(fd_buffers[fd]);
+		fd_buffers[fd] = NULL;
 	}
-	if (ft_strlen(readed) == 0)
+	if (get_str_len(readed) == 0)
 	{
 		free(readed);
 		return (NULL);
