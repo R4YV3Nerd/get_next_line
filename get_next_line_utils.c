@@ -5,99 +5,98 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: maitoumg <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/07 02:04:26 by maitoumg          #+#    #+#             */
-/*   Updated: 2025/01/22 18:54:04 by maitoumg         ###   ########.fr       */
+/*   Created: 2024/12/22 03:45:26 by maitoumg          #+#    #+#             */
+/*   Updated: 2025/01/23 19:04:36 by maitoumg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-size_t	get_str_len(const char *s)
+size_t	str_len(const char *s)
 {
-	size_t	index;
+	size_t			index;
 
+	if (!s)
+		return (0);
 	index = 0;
 	while (s[index])
 		index++;
 	return (index);
 }
 
-static size_t	copy_string_safe(char *dst, const char *src, size_t size)
+char	*str_copy(char *s1, char *s2, size_t n)
 {
 	size_t	index;
 
-	if (size == 0)
-		return (get_str_len(src));
-	index = 0;
-	while (src[index] && index < (size - 1))
+	if (!n)
 	{
-		dst[index] = src[index];
+		free(s1);
+		return (NULL);
+	}
+	index = 0;
+	while (index < n)
+	{
+		s1[index] = s2[index];
 		index++;
 	}
-	dst[index] = 0;
-	return (get_str_len(src));
+	s1[index] = '\0';
+	return (s1);
 }
 
-long	find_character(const char *s, char c)
+int	find_nl(char *data, int *index)
 {
-	long	index;
-
-	index = 0;
-	while (s[index])
+	if (!data)
+		return (0);
+	*index = 0;
+	while (data[*index])
 	{
-		if (s[index] == (unsigned char)c)
-			return (index);
-		index++;
+		if (data[*index] == '\n')
+		{
+			return (1);
+		}
+		(*index)++;
 	}
-	if (s[index] == (unsigned char)c)
-		return (index);
-	return (-1);
+	return (0);
 }
 
-char	*concat_strings(char *s1, char const *s2)
+char	*str_sub(char *s, size_t start, size_t len, int flag)
 {
-	size_t	s1_len;
-	size_t	s2_len;
-	char	*concated_string;
+	char			*ptr;
 
-	if (!s1 || !s2)
+	ptr = malloc(len + 1);
+	if (!ptr)
 		return (NULL);
-	s1_len = get_str_len(s1);
-	s2_len = get_str_len(s2);
-	concated_string = (char *)malloc((s1_len + s2_len + 1) * sizeof(char));
-	if (!concated_string)
+	while (start < len)
+	{
+		ptr[start] = s[start];
+		start++;
+	}
+	ptr[start] = '\0';
+	if (flag)
+		free(s);
+	return (ptr);
+}
+
+char	*str_join(char *s1, char *s2)
+{
+	char			*ptr;
+	size_t			len1;
+	size_t			len2;
+
+	len1 = str_len(s1);
+	len2 = str_len(s2);
+	if (!len1 && !len2)
+		return (free(s1), free(s2), NULL);
+	if (!len1)
+		return (free(s1), str_sub(s2, 0, len2, 1));
+	if (!len2)
+		return (free(s2), str_sub(s1, 0, len1, 1));
+	ptr = (char *)malloc(len1 + len2 + 1);
+	if (!ptr)
 		return (NULL);
-	copy_string_safe(concated_string, s1, s1_len + 1);
-	copy_string_safe((concated_string + s1_len), s2, s2_len + 1);
+	str_copy(ptr, s1, len1);
+	str_copy(ptr + len1, s2, len2);
 	free(s1);
-	return (concated_string);
-}
-
-char	*extract_substr(char const *s, unsigned int start, size_t len)
-{
-	char	*substring_result;
-	size_t	new_len;
-
-	if (!s)
-		return (NULL);
-	if (get_str_len(s) < start)
-	{
-		substring_result = malloc(sizeof(char));
-		substring_result[0] = 0;
-		if (!substring_result)
-			return (NULL);
-	}
-	else
-	{
-		new_len = get_str_len(s + start);
-		if (!(new_len < len))
-			new_len = len;
-		substring_result = (char *)malloc((new_len + 1) * sizeof(char));
-		if (!substring_result)
-			return (NULL);
-		substring_result[new_len] = 0;
-		while (new_len-- > 0)
-			substring_result[new_len] = s[start + new_len];
-	}
-	return (substring_result);
+	free(s2);
+	return (ptr);
 }

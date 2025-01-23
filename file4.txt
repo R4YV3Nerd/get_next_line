@@ -1,3 +1,0 @@
-Short line
-This is a much longer line that might span multiple reads depending on your BUFFER_SIZE.
-Another short line here.
