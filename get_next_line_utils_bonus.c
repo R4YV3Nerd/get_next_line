@@ -6,7 +6,7 @@
 /*   By: maitoumg <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 03:45:26 by maitoumg          #+#    #+#             */
-/*   Updated: 2025/01/23 19:24:45 by maitoumg         ###   ########.fr       */
+/*   Updated: 2025/01/23 23:50:06 by maitoumg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	find_nl(char *data, int *index)
 char	*str_sub(char *s, size_t start, size_t len, int flag)
 {
 	char			*ptr;
-
+	
 	ptr = malloc(len + 1);
 	if (!ptr)
 		return (NULL);

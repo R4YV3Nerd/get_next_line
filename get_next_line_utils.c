@@ -6,7 +6,7 @@
 /*   By: maitoumg <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 03:45:26 by maitoumg          #+#    #+#             */
-/*   Updated: 2025/01/23 20:08:21 by maitoumg         ###   ########.fr       */
+/*   Updated: 2025/01/24 00:53:38 by maitoumg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ int	find_nl(char *data, int *index) // we create a function that finds a newline
 	return (0);
 }
 
-char	*str_sub(char *s, size_t start, size_t len, int flag) // we create a function that returns a substring of a string
+char	*str_sub(char *s, size_t start, size_t len, int flag) // performs two operations: it moves the string pointer to the new line character and returns the part from where the new line character was found to the end of the string.
 {
 	char			*ptr;
 
@@ -78,7 +78,7 @@ char	*str_sub(char *s, size_t start, size_t len, int flag) // we create a functi
 	return (ptr);
 }
 
-char	*str_join(char *s1, char *s2) // we create a function that joins two strings
+char	*str_join(char *s1, char *s2)
 {
 	char			*ptr;
 	size_t			len1;
@@ -89,15 +89,16 @@ char	*str_join(char *s1, char *s2) // we create a function that joins two string
 	if (!len1 && !len2)
 		return (free(s1), free(s2), NULL);
 	if (!len1)
-		return (free(s1), str_sub(s2, 0, len2, 1));
+		return (free(s1), str_sub(s2, 0, len2, 1)); // we made it 1 to free the s2 and return the substring
 	if (!len2)
-		return (free(s2), str_sub(s1, 0, len1, 1));
+		return (free(s2), str_sub(s1, 0, len1, 1)); // we made it 1 to free the s1 and return the substring
 	ptr = (char *)malloc(len1 + len2 + 1);
 	if (!ptr)
 		return (NULL);
-	str_copy(ptr, s1, len1);
-	str_copy(ptr + len1, s2, len2);
+	str_copy(ptr, s1, len1); // we copy the s1 to the ptr from 0 to len1 beacuse we want to copy the whole s1 to the ptr 
+	str_copy(ptr + len1, s2, len2); // we copy the s2 to the ptr from len1 to len2 because we want to copy the whole s2 to the ptr
 	free(s1);
 	free(s2);
 	return (ptr);
 }
+ 
