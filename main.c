@@ -5,7 +5,7 @@ int main()
 {
     char *line;
     int fd = open("test_file.txt", O_RDONLY); // read the line using the read function
-    line = get_next_line(fd); // we assign the return value to a value so we can return it
+    line = get_next_line(fd); // we assign the return value to a pointer so we can return it
     printf("%s", line); // we simply print the line
     free(line); // WE FREE THE LINE!
     if (fd == -1)
