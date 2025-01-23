@@ -6,7 +6,7 @@
 /*   By: maitoumg <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 03:45:26 by maitoumg          #+#    #+#             */
-/*   Updated: 2025/01/23 19:04:46 by maitoumg         ###   ########.fr       */
+/*   Updated: 2025/01/23 20:06:32 by maitoumg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,21 +21,20 @@ char	*get_next_line(int fd)
 
 	while (1)
 	{
-		buff = malloc((size_t)BUFFER_SIZE + 1);
-		if (fd < 0 || BUFFER_SIZE <= 0 || !buff)
-			return (free(buff), free(data), data = NULL, NULL);
-		readed = read(fd, buff, BUFFER_SIZE);
-		if (readed == -1)
-			return (free(buff), free(data), data = NULL, NULL);
-		buff[readed] = '\0';
-		data = str_join(data, buff);
-		if (find_nl(data, &i))
+		buff = malloc((size_t)BUFFER_SIZE + 1); // we allocate memory for the buffer
+		if (fd < 0 || BUFFER_SIZE <= 0 || !buff) // if the file descriptor is invalid, the buffer size is invalid or the buffer is NULL, we return NULL
+			return (free(buff), free(data), data = NULL, NULL); // we free the buffer and the data and we set the data to NULL
+		readed = read(fd, buff, BUFFER_SIZE); // we read the file descriptor and we store the number of bytes read in readed
+		if (readed == -1) // if the read failed, we return NULL
+			return (free(buff), free(data), data = NULL, NULL); // we free the buffer and the data and we set the data to NULL
+		buff[readed] = '\0'; // we add the null terminator to the buffer
+		data = str_join(data, buff); // we join the buffer to the data
 		{
-			buff = str_sub(data, 0, ++i, 0);
-			data = str_copy(data, data + i, str_len(data + i));
-			return (buff);
+			buff = str_sub(data, 0, ++i, 0); // we create a substring of the data from 0 to i
+			data = str_copy(data, data + i, str_len(data + i)); // we copy the data from i to the end of the data
+			return (buff); // we return the substring
 		}
-		if (!readed)
-			return (buff = data, data = NULL, buff);
+		if (!readed) // if the readed is 0, we reached the end of the file
+			return (buff = data, data = NULL, buff); // we set the buffer to the data and the data to NULL and we return the buffer
 	}
 }

@@ -1,19 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*   get_next_line_utils_bonus.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maitoumg <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 03:45:26 by maitoumg          #+#    #+#             */
-/*   Updated: 2025/01/23 20:08:21 by maitoumg         ###   ########.fr       */
+/*   Updated: 2025/01/23 19:24:45 by maitoumg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-size_t	str_len(const char *s) // we create a function that returns the length of a string
-
+size_t	str_len(const char *s)
 {
 	size_t			index;
 
@@ -25,7 +24,7 @@ size_t	str_len(const char *s) // we create a function that returns the length of
 	return (index);
 }
 
-char	*str_copy(char *s1, char *s2, size_t n) // we create a function that copies n bytes from s2 to s1
+char	*str_copy(char *s1, char *s2, size_t n)
 {
 	size_t	index;
 
@@ -44,7 +43,7 @@ char	*str_copy(char *s1, char *s2, size_t n) // we create a function that copies
 	return (s1);
 }
 
-int	find_nl(char *data, int *index) // we create a function that finds a newline in the data
+int	find_nl(char *data, int *index)
 {
 	if (!data)
 		return (0);
@@ -60,7 +59,7 @@ int	find_nl(char *data, int *index) // we create a function that finds a newline
 	return (0);
 }
 
-char	*str_sub(char *s, size_t start, size_t len, int flag) // we create a function that returns a substring of a string
+char	*str_sub(char *s, size_t start, size_t len, int flag)
 {
 	char			*ptr;
 
@@ -78,7 +77,7 @@ char	*str_sub(char *s, size_t start, size_t len, int flag) // we create a functi
 	return (ptr);
 }
 
-char	*str_join(char *s1, char *s2) // we create a function that joins two strings
+char	*str_join(char *s1, char *s2)
 {
 	char			*ptr;
 	size_t			len1;
