@@ -27,7 +27,8 @@ int main()
 
     line = get_next_line(fd3);
 
-    while (line) {
+    while (line)
+	{
         printf("FD 3: %s", line);
         free(line);
         line = get_next_line(fd3);
