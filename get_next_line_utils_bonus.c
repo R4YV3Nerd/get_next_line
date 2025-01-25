@@ -6,7 +6,7 @@
 /*   By: maitoumg <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 03:45:26 by maitoumg          #+#    #+#             */
-/*   Updated: 2025/01/23 23:50:06 by maitoumg         ###   ########.fr       */
+/*   Updated: 2025/01/25 19:13:40 by maitoumg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,9 +88,9 @@ char	*str_join(char *s1, char *s2)
 	if (!len1 && !len2)
 		return (free(s1), free(s2), NULL);
 	if (!len1)
-		return (free(s1), str_sub(s2, 0, len2, 1));
+    	return (str_sub(s2, 0, len2, 1));
 	if (!len2)
-		return (free(s2), str_sub(s1, 0, len1, 1));
+		return (str_sub(s1, 0, len1, 1));
 	ptr = (char *)malloc(len1 + len2 + 1);
 	if (!ptr)
 		return (NULL);

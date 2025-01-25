@@ -6,7 +6,7 @@
 /*   By: maitoumg <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 03:45:26 by maitoumg          #+#    #+#             */
-/*   Updated: 2025/01/23 23:49:46 by maitoumg         ###   ########.fr       */
+/*   Updated: 2025/01/25 22:14:32 by maitoumg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,13 @@
 # include <fcntl.h>
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 42
+#  define BUFFER_SIZE 1
 # endif
 
-char	*str_copy(char *s1, char *s2, size_t n);
+char	*str_ncpy(char *s1, char *s2, size_t n);
 int		find_nl(char *data, int *i);
 char	*get_next_line(int fd);
-size_t	str_len(const char *s);
-char	*str_sub(char *s, size_t start, size_t len, int flag);
-char	*str_join(char *s1, char *s2);
+size_t	get_len(const char *s);
+char	*sub_str(char *s, size_t start, size_t len, int flag);
+char	*ft_strjoin(char *s1, char *s2);
 #endif
