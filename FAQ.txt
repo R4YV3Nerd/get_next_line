@@ -1,0 +1,54 @@
+File Descriptor System Questions:
+
+Can a process have more than one file descriptor?
+   	 	Yes! A process can open multiple files, each with its own file descriptor.
+What happens if a file is opened twice by the same process?
+    		Does it get the same file descriptor, or a new one? What happens to the file offset?
+How does the kernel decide which file descriptor number to assign?
+    		Why does it start from 0, and what happens if FD 0 is already in use?
+What is the purpose of the reference count in the SWOFT?
+    		Why is it important, and how does it affect file operations?
+Can two processes share the same file descriptor?
+    		If not, how can they share access to the same file?
+What happens to the file descriptor table when a process forks?
+    		Do the parent and child processes share the same file descriptors?
+What is the difference between dup() and dup2()?
+    		How do they affect the file descriptor table and the SWOFT?
+Why is the inode table separate from the SWOFT?
+    		What would happen if they were combined into one table?
+
+__________________________________________________________________________________________________
+
+Get Next Line (GNL) Questions:
+
+How does GNL handle files with no newline character?
+    		Does it return the entire file as one line, or does it behave differently?
+What happens if the buffer size in GNL is smaller than the line length?
+Does GNL still work correctly, or does it break?
+How does GNL manage memory for very large files?
+    		Does it load the entire file into memory, or process it in chunks?
+Can GNL handle multiple file descriptors at the same time?
+    		If so, how does it keep track of the buffer and file offset for each FD?
+What happens if GNL encounters an error while reading a file?
+    		Does it return an error, or try to recover?
+How does GNL handle edge cases, like an empty file or a file with only newlines?
+    		Does it return NULL, an empty string, or something else?
+What is the role of static variables in GNL?
+    		Why are they necessary, and how do they affect the function’s behavior?
+How does GNL ensure there are no memory leaks?
+    		What happens if malloc() fails, or if the user doesn’t free the returned line?
+
+__________________________________________________________________________________________________
+
+Advanced Questions:
+
+How would you make GNL thread-safe?
+    		What changes would be needed to handle multiple threads calling get_next_line()?
+What happens if GNL is used to read from a non-file FD, like a pipe or socket?
+    		Does it still work, or does it break?
+How would you optimize GNL for very large files?
+    		Would you change the buffer size, or use a different approach entirely?
+What happens if GNL is called with an invalid file descriptor?
+    		Does it crash, return an error, or behave unpredictably?
+How does GNL handle files that are being written to while being read?
+    		Does it read the new data, or stick to the original content?

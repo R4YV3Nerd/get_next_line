@@ -6,36 +6,43 @@
 /*   By: maitoumg <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 03:45:26 by maitoumg          #+#    #+#             */
-/*   Updated: 2025/01/25 22:26:37 by maitoumg         ###   ########.fr       */
+/*   Updated: 2025/01/29 07:49:45 by maitoumg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*get_next_line(int fd)
+static int  read_and_clean(int fd, char *line, char **next_line)
 {
-	char			*buff;
-	static char		*data;
-	ssize_t			readed;
-	int				i;
+    int i;
 
-	while (1) 
-	{
-		buff = malloc((size_t)BUFFER_SIZE + 1);
-		if (fd < 0 || BUFFER_SIZE <= 0 || !buff)
-			return (free(buff), free(data), data = NULL, NULL);
-		readed = read(fd, buff, BUFFER_SIZE);
-		if (readed == -1)
-			return (free(buff), free(data), data = NULL, NULL);
-		buff[readed] = '\0';
-		data = ft_strjoin(data, buff);
-		if (find_nl(data, &i))
-		{
-			buff = sub_str(data, 0, ++i, 0);
-			data = str_ncpy(data, data + i, get_len(data + i));
-			return (buff);
-		}
-		if (!readed)
-			return (buff = data, data = NULL, buff);
-	}
+    i = read(fd, line, BUFFER_SIZE);
+    if (i < 0)
+    {
+        free(*next_line);
+        return (-1);
+    }
+    while (i > 0)
+    {
+        *next_line = ft_strjoin(*next_line, line);
+        if (ft_clean(line) > 0)
+            break ;
+        i = read(fd, line, BUFFER_SIZE);
+    }
+    return (i);
+}
+
+char    *get_next_line(int fd)
+{
+    static char     line[BUFFER_SIZE + 1];
+    char            *next_line;
+
+    if (fd < 0 || BUFFER_SIZE < 1)
+        return (NULL);
+    next_line = ft_strjoin(0, line);
+    if (ft_clean(line) > 0)
+        return (next_line);
+    if (read_and_clean(fd, line, &next_line) < 0)
+        return (NULL);
+    return (next_line);
 }

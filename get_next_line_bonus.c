@@ -6,69 +6,47 @@
 /*   By: maitoumg <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 03:45:26 by maitoumg          #+#    #+#             */
-/*   Updated: 2025/01/25 11:38:03 by maitoumg         ###   ########.fr       */
+/*   Updated: 2025/01/29 07:51:37 by maitoumg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char *read_and_append(int fd, char *data)
-{
-    char    *buff;
-    ssize_t readed;
+#ifndef FDS_MAX
+# define FDS_MAX 1024
+# endif
 
-    buff = malloc((size_t)BUFFER_SIZE + 1);
-    if (!buff)
-        return (NULL);
-    readed = read(fd, buff, BUFFER_SIZE);
-    if (readed == -1)
+static int  read_and_clean(int fd, char *line, char **next_line)
+{
+    int i;
+
+    i = read(fd, line, BUFFER_SIZE);
+    if (i < 0)
     {
-        free(buff);
-        return (NULL);
+        free(*next_line);
+        return (-1);
     }
-    buff[readed] = '\0';
-    data = str_join(data, buff);
-    free(buff);
-    return (data);
+    while (i > 0)
+    {
+        *next_line = ft_strjoin(*next_line, line);
+        if (ft_clean(line) > 0)
+            break ;
+        i = read(fd, line, BUFFER_SIZE);
+    }
+    return (i);
 }
 
-static char *extract_line(char **data)
+char    *get_next_line(int fd)
 {
-    char *line;
-    int  i;
+    static char     line[FDS_MAX][BUFFER_SIZE + 1];
+    char            *next_line;
 
-    if (find_nl(*data, &i))
-    {
-        line = str_sub(*data, 0, ++i, 0);
-        *data = str_copy(*data, *data + i, str_len(*data + i));
-        return (line);
-    }
-    return (NULL);
-}
-
-char *get_next_line(int fd)
-{
-    static char *data[1024]; 
-    char        *line;
-
-    if (fd < 0 || fd >= 1024 || BUFFER_SIZE <= 0) // Check FD limits, if fd > 1024 it will return NULL because we can't have more than 1024 file descriptors.
+    if (fd < 0 || fd >= FDS_MAX || BUFFER_SIZE < 1)
         return (NULL);
-    while (1)
-    {
-        if (data[fd])
-        {
-            line = extract_line(&data[fd]);
-            if (line)
-                return (line);
-        }
-        data[fd] = read_and_append(fd, data[fd]);
-        if (!data[fd])
-            return (NULL);
-        if (!*data[fd])
-        {
-            free(data[fd]);
-            data[fd] = NULL;
-            return (NULL);
-        }
-    }
+    next_line = ft_strjoin(0, line[fd]);
+    if (ft_clean(line[fd]) > 0)
+        return (next_line);
+    if (read_and_clean(fd, line[fd], &next_line) < 0)
+        return (NULL);
+    return (next_line);
 }
