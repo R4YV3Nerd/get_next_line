@@ -5,11 +5,7 @@
 int main()
 {
 	int fd = open("tess.txt", O_RDONLY);
-	if (fd == -1)
-	{
-		perror("Error opening file");
-		return (1);
-	}
+	int fd2 = open("tess.txt", O_RDONLY);
 	char *line;
 
 	while ((line = get_next_line(fd)) != NULL)
@@ -17,7 +13,13 @@ int main()
 		printf("%s", line);
 		free(line);
 	}
-	close(fd);
+	while ((line = get_next_line(fd2)) != NULL)
+        {
+                printf("%s", line);
+                free(line);
+        }
+        close(fd);
+	close(fd2);
 	return (0);
 }
 

@@ -6,7 +6,7 @@
 /*   By: maitoumg <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 03:45:26 by maitoumg          #+#    #+#             */
-/*   Updated: 2025/01/29 07:21:05 by maitoumg         ###   ########.fr       */
+/*   Updated: 2025/01/30 23:32:16 by maitoumg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 
 char    *get_next_line(int fd);
 char    *ft_strjoin(char *s1, char *s2);
-size_t  ft_strlen(char *s);  // `const` should be added here for better const-correctness.
+size_t  ft_strlen(char *s);
 int     ft_clean(char *str);
 
 #endif
