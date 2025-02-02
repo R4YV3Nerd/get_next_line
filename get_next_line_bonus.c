@@ -6,7 +6,7 @@
 /*   By: maitoumg <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 03:45:26 by maitoumg          #+#    #+#             */
-/*   Updated: 2025/02/02 19:05:07 by maitoumg         ###   ########.fr       */
+/*   Updated: 2025/02/02 21:44:53 by maitoumg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ static int	read_and_clean(int fd, char *line, char **next_line)
 
 char	*get_next_line(int fd)
 {
-	static char line[FDS_MAX][BUFFER_SIZE + 1];
-	char *next_line;
+	static char	line[FDS_MAX][BUFFER_SIZE + 1];
+	char		*next_line;
 
 	if (fd < 0 || fd >= FDS_MAX || BUFFER_SIZE < 1)
 		return (NULL);
