@@ -6,11 +6,11 @@
 /*   By: maitoumg <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 03:45:26 by maitoumg          #+#    #+#             */
-/*   Updated: 2025/02/02 21:44:53 by maitoumg         ###   ########.fr       */
+/*   Updated: 2025/02/02 22:00:02 by maitoumg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 #ifndef FDS_MAX
 # define FDS_MAX 1024
