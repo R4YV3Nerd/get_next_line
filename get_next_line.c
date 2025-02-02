@@ -6,7 +6,7 @@
 /*   By: maitoumg <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 03:45:26 by maitoumg          #+#    #+#             */
-/*   Updated: 2025/02/02 19:03:23 by maitoumg         ###   ########.fr       */
+/*   Updated: 2025/02/02 21:00:46 by maitoumg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ static int  read_and_clean(int fd, char *line, char **next_line)
         free(*next_line);
         return (-1);
     }
+    if(ret == 0)
+        return (0);
     line[ret] = '\0';
     while (ret > 0)
     {
