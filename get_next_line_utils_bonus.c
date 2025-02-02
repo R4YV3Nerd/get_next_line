@@ -24,7 +24,7 @@ char	*ft_strjoin(char *s1, char *s2)
 	if (!joined)
 		return (0);
 	i = 0;
-	while (s1 && s1[i]) 
+	while (s1 && s1[i])
 	{
 		joined[i] = s1[i];
 		i++;
@@ -49,7 +49,7 @@ size_t	ft_strlen(char *s)
 		i++;
 	if (s && s[i] == '\n')
 		i++;
-	return (i); 
+	return (i);
 }
 
 int	ft_clean(char *str)
