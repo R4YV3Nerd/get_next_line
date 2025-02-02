@@ -6,7 +6,7 @@
 /*   By: maitoumg <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 03:45:26 by maitoumg          #+#    #+#             */
-/*   Updated: 2025/01/29 07:49:45 by maitoumg         ###   ########.fr       */
+/*   Updated: 2025/02/02 19:03:23 by maitoumg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,24 @@
 
 static int  read_and_clean(int fd, char *line, char **next_line)
 {
-    int i;
+    int ret;
 
-    i = read(fd, line, BUFFER_SIZE);
-    if (i < 0)
+    ret = read(fd, line, BUFFER_SIZE);
+    if (ret < 0)
     {
         free(*next_line);
         return (-1);
     }
-    while (i > 0)
+    line[ret] = '\0';
+    while (ret > 0)
     {
         *next_line = ft_strjoin(*next_line, line);
         if (ft_clean(line) > 0)
-            break ;
-        i = read(fd, line, BUFFER_SIZE);
+            break;
+        ret = read(fd, line, BUFFER_SIZE);
+        line[ret] = '\0';
     }
-    return (i);
+    return (ret);
 }
 
 char    *get_next_line(int fd)
@@ -43,6 +45,9 @@ char    *get_next_line(int fd)
     if (ft_clean(line) > 0)
         return (next_line);
     if (read_and_clean(fd, line, &next_line) < 0)
+    {
+        free(next_line);
         return (NULL);
+    }
     return (next_line);
 }
