@@ -41,8 +41,7 @@ int main(void)
         printf("%s\n", line);
         free(line);
         }
-        i++;
-
+        
         i++;
     }
 
