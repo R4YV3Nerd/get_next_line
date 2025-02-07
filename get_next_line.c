@@ -60,7 +60,7 @@ char	*get_next_line(int fd)
 		{
 			return (free(line), line = NULL, buffer);
 		}
-		return (free (buffer), free(line), line = NULL, NULL);
+		return (free(buffer), free(line), line = NULL, NULL);
 	}
 	return (buffer);
 }
