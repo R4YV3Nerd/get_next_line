@@ -6,7 +6,7 @@
 /*   By: maitoumg <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 08:02:39 by maitoumg          #+#    #+#             */
-/*   Updated: 2025/02/05 08:02:42 by maitoumg         ###   ########.fr       */
+/*   Updated: 2025/02/06 16:44:17 by maitoumg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@ char	*ft_strjoin(char *s1, char *s2)
 	int		j;
 
 	if (s2[0] == '\0')
-		return (0);
+		return (free(s1), s1 = NULL, NULL);
 	joined = (char *)malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
 	if (!joined)
-		return (0);
+		return (free(s1), NULL);
 	i = 0;
 	while (s1 && s1[i])
 	{
@@ -35,8 +35,7 @@ char	*ft_strjoin(char *s1, char *s2)
 	if (s2[j] == '\n')
 		joined[i++] = '\n';
 	joined[i] = '\0';
-	free(s1);
-	return (joined);
+	return (free(s1), s1 = NULL, joined);
 }
 
 size_t	ft_strlen(char *s)
@@ -44,6 +43,8 @@ size_t	ft_strlen(char *s)
 	size_t	i;
 
 	i = 0;
+	if (!s)
+		return (0);
 	while (s && s[i] && s[i] != '\n')
 		i++;
 	if (s && s[i] == '\n')
@@ -60,6 +61,8 @@ int	ft_clean(char *str)
 	i = 0;
 	j = 0;
 	check = 0;
+	if (!str || !str[i])
+		return (0);
 	while (str[i])
 	{
 		if (check)
@@ -68,5 +71,6 @@ int	ft_clean(char *str)
 			check = 1;
 		str[i++] = '\0';
 	}
+	str[j] = '\0';
 	return (check);
 }

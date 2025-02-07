@@ -6,7 +6,7 @@
 /*   By: maitoumg <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 03:45:26 by maitoumg          #+#    #+#             */
-/*   Updated: 2025/02/02 21:26:22 by maitoumg         ###   ########.fr       */
+/*   Updated: 2025/02/06 19:47:18 by maitoumg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,11 @@
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 42
 # endif
+
+// # if BUFFER_SIZE < 1 || BUFFER_SIZE >= 2147483647
+// #  undef BUFFER_SIZE
+// #  define BUFFER_SIZE 0
+// # endif
 
 char	*get_next_line(int fd);
 char	*ft_strjoin(char *s1, char *s2);
