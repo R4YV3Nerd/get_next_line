@@ -6,7 +6,7 @@
 /*   By: maitoumg <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 03:45:26 by maitoumg          #+#    #+#             */
-/*   Updated: 2025/02/07 09:36:56 by maitoumg         ###   ########.fr       */
+/*   Updated: 2025/02/07 21:28:38 by maitoumg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ static int	read_and_clean(int fd, char *line, char **buffer)
 	if (ret < 0)
 	{
 		free(*buffer);
+		*buffer = NULL;
 		return (-1);
 	}
 	if (ret == 0)
@@ -41,7 +42,7 @@ char	*get_next_line(int fd)
 	static char	*line;
 	char		*buffer;
 
-	if (fd < 0 || BUFFER_SIZE == 0)
+	if (fd < 0 || fd > 1024 || BUFFER_SIZE <= 0)
 		return (NULL);
 	if (!line)
 	{
@@ -56,8 +57,10 @@ char	*get_next_line(int fd)
 	if (read_and_clean(fd, line, &buffer) <= 0)
 	{
 		if (buffer && *buffer != '\0')
-			return (buffer);
-	return (free(line), line = NULL, NULL);
+		{
+			return (free(line), line = NULL, buffer);
+		}
+		return (free (buffer), free(line), line = NULL, NULL);
 	}
 	return (buffer);
 }

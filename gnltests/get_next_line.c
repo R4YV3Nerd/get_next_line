@@ -1,20 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: maitoumg <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/05 08:02:52 by maitoumg          #+#    #+#             */
-/*   Updated: 2025/02/07 21:29:14 by maitoumg         ###   ########.fr       */
+/*   Created: 2024/12/22 03:45:26 by maitoumg          #+#    #+#             */
+/*   Updated: 2025/02/07 09:36:56 by maitoumg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line_bonus.h"
-
-#ifndef FDS_MAX
-# define FDS_MAX 1024
-#endif
+#include "get_next_line.h"
 
 static int	read_and_clean(int fd, char *line, char **buffer)
 {
@@ -24,7 +20,6 @@ static int	read_and_clean(int fd, char *line, char **buffer)
 	if (ret < 0)
 	{
 		free(*buffer);
-		*buffer = NULL;
 		return (-1);
 	}
 	if (ret == 0)
@@ -43,26 +38,26 @@ static int	read_and_clean(int fd, char *line, char **buffer)
 
 char	*get_next_line(int fd)
 {
-	static char	*line[FDS_MAX];
+	static char	*line;
 	char		*buffer;
 
-	if (fd < 0 || fd >= FDS_MAX || BUFFER_SIZE == 0)
+	if (fd < 0 || BUFFER_SIZE == 0)
 		return (NULL);
-	if (!line[fd])
+	if (!line)
 	{
-		line[fd] = malloc((size_t)BUFFER_SIZE + 1);
-		if (!line[fd])
+		line = malloc((size_t)BUFFER_SIZE + 1);
+		if (!line)
 			return (NULL);
-		line[fd][0] = '\0';
+		line[0] = '\0';
 	}
-	buffer = ft_strjoin(0, line[fd]);
-	if (ft_clean(line[fd]) > 0)
+	buffer = ft_strjoin(0, line);
+	if (ft_clean(line) > 0)
 		return (buffer);
-	if (read_and_clean(fd, line[fd], &buffer) <= 0)
+	if (read_and_clean(fd, line, &buffer) <= 0)
 	{
 		if (buffer && *buffer != '\0')
 			return (buffer);
-		return (free(line[fd]), line[fd] = NULL, NULL);
+	return (free(line), line = NULL, NULL);
 	}
 	return (buffer);
 }

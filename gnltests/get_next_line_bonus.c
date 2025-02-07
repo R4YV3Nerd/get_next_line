@@ -6,7 +6,7 @@
 /*   By: maitoumg <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 08:02:52 by maitoumg          #+#    #+#             */
-/*   Updated: 2025/02/07 21:29:14 by maitoumg         ###   ########.fr       */
+/*   Updated: 2025/02/07 11:01:43 by maitoumg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ static int	read_and_clean(int fd, char *line, char **buffer)
 	if (ret < 0)
 	{
 		free(*buffer);
-		*buffer = NULL;
 		return (-1);
 	}
 	if (ret == 0)
