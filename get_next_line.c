@@ -6,7 +6,7 @@
 /*   By: maitoumg <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 03:45:26 by maitoumg          #+#    #+#             */
-/*   Updated: 2025/02/07 21:28:38 by maitoumg         ###   ########.fr       */
+/*   Updated: 2025/02/07 23:52:52 by maitoumg         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static int	read_and_clean(int fd, char *line, char **buffer)
 		*buffer = ft_strjoin(*buffer, line);
 		if (ft_clean(line) > 0)
 			break ;
-		ret = read(fd, line, (size_t)BUFFER_SIZE);
+		ret = read(fd, line, (size_t)BUFFER_SIZE); 
 		line[ret] = '\0';
 	}
 	return (ret);

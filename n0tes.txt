@@ -1,0 +1,1 @@
+These are notes for the repo owner. The whole project needs to be refined for the filed push, check out the files of the testing phase also make sure there are not duplicated files and that everything is working as expected for the next projects.
